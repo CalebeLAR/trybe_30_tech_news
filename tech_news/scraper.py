@@ -1,5 +1,6 @@
 import requests
 import time
+import parsel
 
 
 # Requisito 1
@@ -36,8 +37,24 @@ def fetch(url):
 
 # Requisito 2
 def scrape_updates(html_content):
-    """Seu código deve vir aqui"""
-    raise NotImplementedError
+    """
+    Realiza web scraping no conteúdo HTML fornecido e extrai os URLs das
+    notícias ou atualizações encontrados na página.
+
+    Args:
+        html_content (str): O conteúdo HTML da página da web a ser analisada.
+
+    Returns:
+        list[str]: Uma lista de URLs das notícias ou atualizações encontrados
+        na página. Retorna uma lista vazia se nenhum URL for encontrado.
+
+    """
+    html_selector = parsel.Selector(text=html_content)
+    urls_news = html_selector.css(
+        "article h2.entry-title a::attr(href)"
+    ).getall()
+
+    return [] if urls_news is None else urls_news
 
 
 # Requisito 3
