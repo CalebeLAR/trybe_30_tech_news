@@ -72,17 +72,62 @@ def scrape_next_page_link(html_content):
 
     """
     html_selector = parsel.Selector(text=html_content)
-    url_next = html_selector.css(
-        "a.next::attr(href)"
-    ).get()
+    url_next = html_selector.css("a.next::attr(href)").get()
 
     return url_next
 
 
 # Requisito 4
 def scrape_news(html_content):
-    """Seu código deve vir aqui"""
-    raise NotImplementedError
+    """
+    Realiza a extração de informações de uma página de notícias a partir do
+    conteúdo HTML.
+
+    Args:
+        html_content (str): O conteúdo HTML da página da notícia.
+
+    Returns:
+        dict: Um dicionário contendo as informações extraídas, incluindo a URL,
+        o título, a data de publicação, o autor, o tempo estimado de
+        leitura, o resumo e a categoria da notícia.
+    """
+
+    html_selector = parsel.Selector(text=html_content)
+
+    # scrape_news_get_url
+    url = html_selector.xpath('//html/head/link[@rel="canonical"]/@href').get()
+
+    # scrape_news_get_title
+    title = html_selector.css("h1.entry-title::text").get()
+
+    # scrap_news_timestamp
+    timestamp = html_selector.css("li.meta-date::text").get()
+
+    # scrap_news_writer
+    writer = html_selector.css("li.meta-author a::text").get()
+
+    # scrap_news_reading_time
+    reading_time = html_selector.css("li.meta-reading-time::text").re_first(
+        r"\d*"
+    )
+
+    # scrap_news_summary
+    summary = html_selector.xpath(
+        'string(//div[@class="entry-content"]/p)'
+    ).get()
+
+    # scrap_news_category
+    category = html_selector.css("div.meta-category span.label::text").get()
+
+    return {
+        "url": url,
+        "title": title.strip(),
+        "timestamp": timestamp,
+        "writer": writer,
+        "reading_time": int(reading_time),
+        "summary": summary.strip(),
+        "category": category,
+    }
 
 
 # Requisito 5
