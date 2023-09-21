@@ -44,4 +44,14 @@ def search_by_date(date):
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
-    raise NotImplementedError
+    result = list()
+    regex = re.compile(category.lower(), re.IGNORECASE)
+    searched_news = search_news({"category": {"$regex": regex}})
+
+    if not searched_news:
+        return []
+
+    for new in searched_news:
+        result.append((new["title"], new["url"]))
+
+    return result
