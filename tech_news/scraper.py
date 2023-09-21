@@ -32,7 +32,6 @@ def fetch(url):
 
         return response.text
     except requests.RequestException:
-
         return None
 
 
@@ -150,3 +149,6 @@ def get_tech_news(amount):
     scraped_news = [scrape_news(fetch(url)) for url in urls]
     create_news(scraped_news)
     return scraped_news
+
+
+get_tech_news(46)
